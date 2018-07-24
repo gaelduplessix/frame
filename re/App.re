@@ -46,7 +46,7 @@ let make = _children => {
            );
          })
       |> ignore;
-    let handleLogout = () =>
+    let logout = () =>
       BsReactNative.AsyncStorage.removeItem(Config.accessTokenStorageKey, ())
       |> then_(() => {
            self.send(SetAccessToken(None));
@@ -57,8 +57,25 @@ let make = _children => {
       (
         switch (self.state.accessToken) {
         | None => <Button title="Login with Google" onPress=handleLogin />
-        /* | Some(_token) => <Button title="Logout" onPress=handleLogout /> */
-        | Some(accessToken) => <AlbumSelector accessToken />
+        | Some(accessToken) =>
+          switch (self.state.albumId) {
+          | None =>
+            <AlbumSelector
+              accessToken
+              onSelected=(albumId => self.send(SetAlbumId(Some(albumId))))
+              /* in case of error, logout (TODO: better handle expired token...) */
+              onError=logout
+            />
+          | Some(albumId) =>
+            <View>
+              <Button title="Logout" onPress=logout />
+              <Button
+                title="Select another album"
+                onPress=(() => self.send(SetAlbumId(None)))
+              />
+              <SlideShow accessToken albumId />
+            </View>
+          }
         }
       )
     </SafeAreaView>;
@@ -67,16 +84,3 @@ let make = _children => {
 
 /* expose ReactJS component for use by React Native */
 let app = ReasonReact.wrapReasonForJs(~component, _jsProps => make([||]));
-
-/* <Image
-     style=Style.(style([width(Pt(100.0)), height(Pt(100.0))]))
-     source=(
-       Image.URI(
-         Image.imageURISource(
-           ~uri=
-             "https://lh3.googleusercontent.com/lr/AJ_cxPaJU12BYdHonAkn9K2xNju5JiwAI34f8yZl96EXDXnRM_qNE_cPtqBeqxjy4nMMfUofVT81cqPPSU7noC7WVlGWTJdVyUlpMgVeH9GvVelzCxDMzlyPl-tfdhctaOroKu2cUYzLU_SG5tSf7B0lbpfqiXXIMY7res91CVf82YNQWJY2UyuTZKO_rDOvYnNAg1Z5k1uKP0owRaGjG3rIJzAnCIX7SCJ096-x7pgvKrmplIjHB-6fITML1ty6xwakCLS4fD09NWKSdg8NzZqB427Fq4xzuBpnwOz3qecFEJh1FMAvrb7gDr77n6pa-ka81LAZgnY7IVvHsAKZLDYJY86aBsky56UdFCgdIRqWFD4ph7bjKtvhXf1xRDDcEmNGB4PWFnYHc7oRufeAsB9YxFR6bmEq3GZMziRxoHgVs3QhuXfK0P6kSBdVK7hr6vhBzNTH-UUOWQq0fPpvDFVz4DYyIZHQbkp4l5XDr0dg60gMVUqcxBi5-yCJI2mbCUy9ErTu-4Q8c0GFZxdHXA8oHY7FbJjNMhIkocAWb5yScnCTY0vrZx_WwFiFCwcsZHTv0Qx5u4TJK_97X4HkFU0fR2phOO9HunWvojEj22eEWrT-vVBRavHyTouN9PL1pNKlhMjOWzkf6MQ_zSIea3sNQvNkarcSRsDj4q1qX01Cq7qp8tb8Bq0C-pencesj5OhRcXNNccZcW63hpaNLh5vYHeqswgMtN595LfrXpIgKZZYTVZYZb29Weo3vTTE2TakGhA3lnJ3USpSzhQwU7Nr-4ZIOzKf4iOwvhG2Qsy2p3aBRLimtgGvCUHvFtyyKBjZbUmg",
-           (),
-         ),
-       )
-     )
-   /> */
