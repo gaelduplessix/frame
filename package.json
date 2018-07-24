@@ -1,0 +1,39 @@
+{
+  "name": "frame",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "envify": "^4.1.0",
+    "jest-expo": "~27.0.0",
+    "react-native-scripts": "1.14.0",
+    "react-test-renderer": "16.3.1"
+  },
+  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "scripts": {
+    "config": "envify config.tpl.js > config.js",
+    "start": "react-native-scripts start",
+    "eject": "react-native-scripts eject",
+    "android": "react-native-scripts android",
+    "ios": "react-native-scripts ios",
+    "test": "jest",
+    "build": "bsb -make-world -clean-world",
+    "watch": "bsb -make-world -clean-world -w"
+  },
+  "jest": {
+    "preset": "jest-expo"
+  },
+  "dependencies": {
+    "@glennsl/bs-json": "^2.0.0",
+    "bs-fetch": "^0.3.0",
+    "bs-platform": "^4.0.0",
+    "bs-react-native": "^0.8.0",
+    "expo": "^27.0.1",
+    "react": "16.3.1",
+    "react-native": "~0.55.2",
+    "reason-react": "^0.4.2"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  }
+}
